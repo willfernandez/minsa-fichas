@@ -35,7 +35,16 @@
                 </div>
 
                 <div class="row form-group">
-                    <div class="col-md-4 col-md-offset-2">
+
+                    <div class="col-md-4">
+
+                        <label for="fecha_ficha" class="col-md-2 control-label">Fecha</label>
+                        <div class="col-md-10">
+                            {!! Form::date('fecha_ficha', \Carbon\Carbon::now()) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
 
                             <label for="servicio_id" class="col-md-2 control-label">Servicio</label>
                             <div class="col-md-10">
@@ -43,7 +52,7 @@
                             </div>
                     </div>
 
-                    <div class="col-md-4 col-md-offset-1">
+                    <div class="col-md-4">
                             <label for="turno" class="col-md-2 control-label">Turno</label>
                             <div class="col-md-10">
                                 <select id="turno"  name="turno" class="form-control">

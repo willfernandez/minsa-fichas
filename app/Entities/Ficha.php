@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ficha extends Entity
 {
-    protected $fillable= ['paciente_id','servicio_id','turno','diagnostico', 'tipo_incidente_id', 'tipo_evento_id', 'categoria_adverso_id', 'problema_id', 'descrip_suceso','personal_id'];
+    protected $fillable= ['paciente_id','servicio_id','turno','diagnostico', 'tipo_incidente_id', 'tipo_evento_id', 'categoria_adverso_id', 'problema_id', 'descrip_suceso','personal_id', 'fecha_ficha'];
 
     public function getCreatedAtAttribute($date)
     {

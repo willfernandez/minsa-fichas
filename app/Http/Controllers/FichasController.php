@@ -65,7 +65,7 @@ class FichasController extends Controller
         $categoriaAdversos = $this->categoriaAdversoRepo->getAll();
         $categoriaAdversosSelect = $categoriaAdversos->pluck('nom_categoria', 'id');
 
-	$personals = $this->personalRepo->getAll();
+	    $personals = $this->personalRepo->getAll();
         $personalsSelect = $personals->pluck('tip_personal', 'id');
 
 
