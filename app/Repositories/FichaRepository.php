@@ -19,7 +19,7 @@ class FichaRepository extends BaseRepository
     {
         return $this->getModel()->where('fichas.tipo_incidente_id', '=', $tipo_incidente)
                                 ->where('fichas.servicio_id', '=', $servicio_id)
-                                ->whereBetween('fichas.created_at', $fecha)
+                                ->whereBetween('fichas.fecha_ficha', $fecha)
                                 ->count('fichas.id');
 
     }
@@ -28,7 +28,7 @@ class FichaRepository extends BaseRepository
     {
        // dd($fecha);
         return $this->getModel()->where('fichas.tipo_incidente_id', '=', $tipo_incidente)
-                                ->whereBetween('fichas.created_at', $fecha)
+                                ->whereBetween('fichas.fecha_ficha', $fecha)
                                 ->count('fichas.id');
 
     }
@@ -38,14 +38,14 @@ class FichaRepository extends BaseRepository
         $fecha = [$fecha_inicio, $fecha_fin];
         return $this->getModel()->where('fichas.problema_id', '=', $problema_id)
             ->where('fichas.tipo_incidente_id', '=', $tipo_incidente_id)
-            ->whereBetween('fichas.created_at', $fecha)
+            ->whereBetween('fichas.fecha_ficha', $fecha)
             ->count('fichas.id');
     }
 
     public function r_num_total_personals($fecha_inicio, $fecha_fin)
     {
         $fecha = [$fecha_inicio, $fecha_fin];
-        return $this->getModel()->whereBetween('fichas.created_at', $fecha)
+        return $this->getModel()->whereBetween('fichas.fecha_ficha', $fecha)
                                 ->count('fichas.id');
 
     }
@@ -53,7 +53,7 @@ class FichaRepository extends BaseRepository
     {
         $fecha = [$fecha_inicio, $fecha_fin];
         return $this->getModel()->where('fichas.personal_id', '=', $personal_id)
-                                ->whereBetween('fichas.created_at', $fecha)
+                                ->whereBetween('fichas.fecha_ficha', $fecha)
                                 ->count('fichas.id');
     }
 
