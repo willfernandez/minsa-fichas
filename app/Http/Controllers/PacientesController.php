@@ -96,7 +96,8 @@ class PacientesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $paciente = $this->pacienteRepository->update($request, $id);
+        return response()->json($paciente);
     }
 
     /**

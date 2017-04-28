@@ -15,6 +15,14 @@ class FichaRepository extends BaseRepository
         return $this->getModel()->create($request);
     }
 
+    //PACIENTES
+
+    public function verFichas($paciente_id)
+    {
+        return $this->getModel()->where('fichas.paciente_id', '=', $paciente_id)->get();
+    }
+
+    //REPORTES
     public function r_num_incidentes_servicio($servicio_id, $fecha, $tipo_incidente)
     {
         return $this->getModel()->where('fichas.tipo_incidente_id', '=', $tipo_incidente)

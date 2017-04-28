@@ -22,6 +22,7 @@ Route::get('pacientes/find', 'PacientesController@findPaciente');
 Route::get('pacientes/show/{id}', 'PacientesController@show');
 
 Route::delete('pacientes/{id}', 'PacientesController@destroy');
+Route::put('pacientes/{id}', 'PacientesController@update');
 
 Route::get('categorias/findProblema/{id}', 'ProblemasController@findProblema');
 Route::get('categorias', 'CategoriaAdversosController@index');
@@ -29,8 +30,10 @@ Route::get('categorias', 'CategoriaAdversosController@index');
 Route::get('tipoIncidentes', 'TipoIncidentesController@index');
 Route::get('tipoEventos', 'TipoEventosController@index');
 
+//FICHAS
 Route::get('fichas/{idPaciente}', 'FichasController@create');
 Route::post('fichas', 'FichasController@store');
+Route::get('user/fichas/{paciente_id}', 'FichasController@verFichasPaciente');
 
 
 

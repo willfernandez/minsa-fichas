@@ -67,4 +67,11 @@ class PacienteRepository extends  BaseRepository
         }
         return response()->json($response);
     }
+
+    public function update($request,$id)
+    {
+        $paciente = $this->getModel()->find($id)->update($request->all());
+
+        return $paciente;
+    }
 }

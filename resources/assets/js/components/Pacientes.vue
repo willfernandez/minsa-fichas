@@ -49,7 +49,7 @@
             </tr>
 
 
-                <Paciente v-for="(paciente, index) in pacientes" v-bind:paciente="paciente" v-on:deleter="deleteThisRow(index,paciente)"></Paciente>
+                <Paciente v-for="(paciente, index) in pacientes" v-bind:paciente="paciente" v-on:deleter="deleteThisRow(index,paciente)" v-on:edit="editThisPaciente(index,paciente)"></Paciente>
 
 
 
@@ -249,19 +249,37 @@
 
             },
             createPaciente: function () {
-                this.$http.post('/pacientes', this.paciente).then(function(response){
-                    this.getPacientes();
-                    $("#create-paciente").modal('hide');
-                    $('.modal-backdrop').remove();
-                    this.paciente.num_ficha = '';
-                    this.paciente.nom_paciente = '';
-                    this.paciente.ape_paciente = '';
-                    this.paciente.edad_paciente = '';
-                    this.paciente.sexo = '';
+                if(this.paciente.id != null)
+                {
+                    this.$http.put('pacientes/'+this.paciente.id, this.paciente).then(function(response){
+                        this.getPacientes();
+                        $("#create-paciente").modal('hide');
+                        $('.modal-backdrop').remove();
+                        this.paciente.num_ficha = '';
+                        this.paciente.nom_paciente = '';
+                        this.paciente.ape_paciente = '';
+                        this.paciente.edad_paciente = '';
+                        this.paciente.sexo = '';
+                    }, function(response){
+                           console.log('no entro')
+                        }
+                    );
+                }else{
+                    this.$http.post('/pacientes', this.paciente).then(function(response){
+                        this.getPacientes();
+                        $("#create-paciente").modal('hide');
+                        $('.modal-backdrop').remove();
+                        this.paciente.num_ficha = '';
+                        this.paciente.nom_paciente = '';
+                        this.paciente.ape_paciente = '';
+                        this.paciente.edad_paciente = '';
+                        this.paciente.sexo = '';
 
-                }, function (response) {
-                    this.formErrors = response.body;
-                 });
+                    }, function (response) {
+                        this.formErrors = response.body;
+                    });
+                }
+
 
 
             },
@@ -275,7 +293,16 @@
                 this.$http.delete('/pacientes/' + paciente.id)
 
                 // this.getPacientes();
-            }
+            },
+            editThisPaciente: function(index,paciente) {
+                this.paciente.id = paciente.id;
+                this.paciente.num_ficha = paciente.num_ficha;
+                this.paciente.nom_paciente = paciente.nom_paciente;
+                this.paciente.ape_paciente = paciente.ape_paciente;
+                this.paciente.edad_paciente = paciente.edad_paciente;
+                this.paciente.sexo = paciente.sexo;
+            },
+
         }
     }
 </script>
