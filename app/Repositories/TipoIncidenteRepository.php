@@ -18,4 +18,6 @@ class TipoIncidenteRepository extends BaseRepository
     {
         return new TipoIncidente();
     }
+
+
 }

@@ -39,6 +39,9 @@
 
 <script>
     export default {
+
+        props: ['incidente_id'],
+
         data: function(){
             return {
                 categoria_adverso: '',
@@ -47,12 +50,15 @@
             }
         },
         created: function () {
+            console.log(this.incidente_id);
             this.getTipoIncidente();
+            this.tipo_incidentes = this.incidente_id;
+
         },
         methods :
         {
             getTipoIncidente: function(){
-                console.log('entreIncidente');
+                //console.log('entreIncidente');
                 this.$http.get('/tipoIncidentes').then(function(response){
                     this.options = response.body;
                 });

@@ -51,6 +51,7 @@ class FichasController extends Controller
      */
     public function create($id_paciente)
     {
+        $ficha = $this->fichaRepo->getModel();
         $paciente = $this->pacienteRepo->findOrFail($id_paciente);
 
         $servicios = $this->servicioRepo->getAll();
@@ -68,9 +69,12 @@ class FichasController extends Controller
 	    $personals = $this->personalRepo->getAll();
         $personalsSelect = $personals->pluck('tip_personal', 'id');
 
-
-        //dd($tipoIncidente);
-        return view('fichas/open_ficha', compact('paciente', 'tipoIncidenteSelect', 'tipoIncidentes', 'tipoEventos', 'tipoEventosSelect', 'categoriaAdversos', 'categoriaAdversosSelect', 'serviciosSelect', 'personalsSelect'));
+        // para los combos echos en vue js
+        $ficha->tipo_incidente_id= 0;
+        $ficha->tipo_evento_id=0;
+        $ficha->categoria_adverso_id=0;
+        $ficha->problema_id = 0;
+        return view('fichas/open_ficha', compact('ficha','paciente', 'tipoIncidenteSelect', 'tipoIncidentes', 'tipoEventos', 'tipoEventosSelect', 'categoriaAdversos', 'categoriaAdversosSelect', 'serviciosSelect', 'personalsSelect'));
     }
 
     /**
@@ -94,7 +98,7 @@ class FichasController extends Controller
     public function verFichasPaciente($paciente_id)
     {
         $fichas = $this->fichaRepo->verFichas($paciente_id);
-        dd($fichas);
+        return view('fichas/ver_fichas', compact('fichas'));
     }
 
     /**
@@ -105,7 +109,27 @@ class FichasController extends Controller
      */
     public function edit($id)
     {
-        //
+        $ficha = $this->fichaRepo->findFicha($id);
+        $paciente = $ficha->paciente;
+
+        $servicios = $this->servicioRepo->getAll();
+        $serviciosSelect = $servicios->pluck('nom_servicio', 'id');
+
+        $tipoIncidentes = $this->tipoIncidenteRepo->getAll();
+        $tipoIncidenteSelect = $tipoIncidentes->pluck('nom_incidente', 'id');
+
+        $tipoEventos = $this->tipoEventoRepo->getAll();
+        $tipoEventosSelect = $tipoEventos->pluck('nom_tip_evento', 'id');
+
+        $categoriaAdversos = $this->categoriaAdversoRepo->getAll();
+        $categoriaAdversosSelect = $categoriaAdversos->pluck('nom_categoria', 'id');
+
+        $personals = $this->personalRepo->getAll();
+        $personalsSelect = $personals->pluck('tip_personal', 'id');
+
+        //dd(count($ficha));
+        return view('fichas/edit', compact('ficha', 'paciente', 'tipoIncidenteSelect', 'tipoIncidentes', 'tipoEventos', 'tipoEventosSelect', 'categoriaAdversos', 'categoriaAdversosSelect', 'serviciosSelect', 'personalsSelect'));
+
     }
 
     /**
@@ -115,9 +139,10 @@ class FichasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreFichaRequest $request, $id)
     {
-        //
+        $ficha = $this->fichaRepo->update($request, $id);
+        return redirect('user/fichas/'. $ficha->paciente_id);
     }
 
     /**

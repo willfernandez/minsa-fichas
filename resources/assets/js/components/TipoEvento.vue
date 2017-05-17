@@ -38,6 +38,9 @@
 
 <script>
     export default {
+
+        props: ['evento_id'],
+
         data: function(){
             return {
                 categoria_adverso: '',
@@ -48,11 +51,13 @@
 
         created: function () {
             this.getTipoEvento();
+            this.tipo_eventos = this.evento_id;
+            console.log('ddd');
+
         },
         methods :
         {
             getTipoEvento: function(){
-                console.log('entreEventos');
                 this.$http.get('/tipoEventos').then(function(response){
                     this.options = response.body;
                 });

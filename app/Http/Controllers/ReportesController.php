@@ -259,6 +259,37 @@ class ReportesController extends Controller
         return view('reportes/mensual_categoria_procesado', compact('total', 'categorias','tipo_incidentes','fecha_fin', 'fecha_inicio'));
     }
 
+    public function procesarConsolidado()
+    {
+        $categorias = $this->categoriaAdversoRepo->getCategoriasProblemas();
+        $servicios = $this->servicioRepo->getAll();
+        $tipo_incidentes = $this->tipoIncidenteRepo->getAll();
+        $i=0;
+        $j=0;
+
+        foreach($categorias as $categoria)
+        {
+            foreach($categoria->problemas as $problema)
+            {
+                foreach($servicios as $servicio)
+                {
+                    foreach($tipo_incidentes as $tipo_incidente)
+                    {
+                        $total_incidente[$i][$j] = $this->fichaRepo->total_consolidado_incidente($categoria->id,$problema->id,$servicio->id,$tipo_incidente->id);
+                        $j++;
+                    }
+                }
+                $i++;
+            }
+
+        }
+        return view('reportes/mensual_consolidado_procesado', compact('total_incidente', 'categorias', 'tipo_incidentes', 'servicios'));
+
+
+
+
+
+    }
 
     public function mensualPersonal()
     {
@@ -315,6 +346,109 @@ class ReportesController extends Controller
 
         return view('reportes/mensual_personal_procesado', compact('personals', 'fecha_inicio', 'fecha_fin', 'total', 'lava'));
 
+    }
+
+    public function inicidenteEvento()
+    {
+        //$q->whereMonth('created_at', '=', date('m'));
+        //dd(date('m'));
+       // dd(config('options.meses'));
+        $tipoIncidentes = $this->tipoIncidenteRepo->getAll();
+        $tipoIncidenteSelect = $tipoIncidentes->pluck('nom_incidente', 'id');
+
+        $servicios = $this->servicioRepo->getAll();
+        $serviciosSelect = $servicios->pluck('nom_servicio', 'id');
+        return view('reportes/incidente_evento', compact('tipoIncidenteSelect', 'serviciosSelect'));
+
+    }
+
+
+    public function incidenteEventoServicio(){
+
+        $servicios = $this->servicioRepo->getAll();
+        $meses = config('options.meses');
+        foreach($servicios as $servicio)
+        {
+            foreach($meses as $clave => $valor)
+            {
+                if($clave <= date('m'))
+                {
+                    $incidentes[$servicio->id][$clave] = $this->fichaRepo->r_num_incidentes_eventos_servicio($clave, '1', $servicio->id);
+                    $eventos[$servicio->id][$clave] = $this->fichaRepo->r_num_incidentes_eventos_servicio($clave, '2', $servicio->id);
+                }
+                $total_incidentes_meses[$clave] = $this->fichaRepo->total_num_incidentes_eventos_personal_mes($clave,'1');
+                $total_eventos_meses[$clave] = $this->fichaRepo->total_num_incidentes_eventos_personal_mes($clave,'2');
+            }
+            $servicio->total_incidente = $this->fichaRepo->total_num_incidentes_eventos_servicio('1', $servicio->id);
+            $servicio->total_evento = $this->fichaRepo->total_num_incidentes_eventos_servicio('2', $servicio->id);
+        }
+        $total_incidentes_consolidado = $this->fichaRepo->total_num_incidentes_eventos_personal_consolidado('1');
+        $total_eventos_consolidado = $this->fichaRepo->total_num_incidentes_eventos_personal_consolidado('2');
+        return view('reportes/incidente_evento_servicio', compact('incidentes', 'eventos', 'servicios', 'meses', 'total_incidentes_meses', 'total_eventos_meses', 'total_incidentes_consolidado','total_eventos_consolidado'));
+    }
+
+    public function incidenteEventoPersonal()
+    {
+        $personals = $this->personalRepo->getAll();
+        $meses = config('options.meses');
+        foreach($personals as $personal)
+        {
+            foreach($meses as $clave => $valor)
+            {
+                if($clave <= date('m'))
+                {
+                    $incidentes[$personal->id][$clave] = $this->fichaRepo->r_num_incidentes_eventos_personal($clave, '1', $personal->id);
+                    $eventos[$personal->id][$clave] = $this->fichaRepo->r_num_incidentes_eventos_personal($clave, '2', $personal->id);
+                }
+                $total_incidentes_meses[$clave] = $this->fichaRepo->total_num_incidentes_eventos_personal_mes($clave,'1');
+                $total_eventos_meses[$clave] = $this->fichaRepo->total_num_incidentes_eventos_personal_mes($clave,'2');
+            }
+
+            $personal->total_incidente = $this->fichaRepo->total_num_incidentes_eventos_personal('1', $personal->id);
+            $personal->total_evento = $this->fichaRepo->total_num_incidentes_eventos_personal('2', $personal->id);
+        }
+
+        $total_incidentes_consolidado = $this->fichaRepo->total_num_incidentes_eventos_personal_consolidado('1');
+        $total_eventos_consolidado = $this->fichaRepo->total_num_incidentes_eventos_personal_consolidado('2');
+
+        return view('reportes/incidente_evento_personal', compact('incidentes','eventos', 'personals', 'meses', 'total_eventos_meses', 'total_incidentes_meses', 'total_incidentes_consolidado', 'total_eventos_consolidado'));
+
+    }
+
+    public function trimestralServicio()
+    {
+        $servicios = $this->servicioRepo->getAll();
+        $serviciosSelect = $servicios->pluck('nom_servicio', 'id');
+
+        $tipoIncidentes = $this->tipoIncidenteRepo->getAll();
+        $tipoIncidenteSelect = $tipoIncidentes->pluck('nom_incidente', 'id');
+
+        return view('reportes/trimestral_servicio', compact('serviciosSelect', 'tipoIncidenteSelect'));
+    }
+
+    public function procesarTrimestralServicio(Request $request)
+    {
+        $servicio_id = $request->get('servicio_id');
+        $tipo_incidente_id = $request->get('tipo_incidente_id');
+        $servicio = $this->servicioRepo->findOrFail($servicio_id);
+        $tipo_incidente = $this->tipoIncidenteRepo->findOrFail($tipo_incidente_id);
+        $primer_trimestre = ['2017-01-01', '2017-04-30'];
+        $segundo_trimestre = ['2017-05-01', '2017-08-31'];
+        $tercer_trimestre = ['2017-09-01', '2017-12-31'];
+        $fichas_primer = $this->fichaRepo->r_ficha_servicio($servicio_id, $primer_trimestre, $tipo_incidente_id);
+        if(date('Y-m-d') <=  '2017-08-31' or date('Y-m-d') >= '2017-05-01')
+        {
+            $fichas_segundo = $this->fichaRepo->r_ficha_servicio($servicio_id, $segundo_trimestre, $tipo_incidente_id);
+        }
+        if(date('Y-m-d') <=  '2017-12-31' or date('Y-m-d') >= '2017-09-01')
+        {
+            $fichas_tercer = $this->fichaRepo->r_ficha_servicio($servicio_id, $tercer_trimestre, $tipo_incidente_id);
+
+        }
+
+       // dd($fichas_primer);
+
+        return view('reportes/trimestral_servicio_procesado', compact('servicio','tipo_incidente' , 'fichas_primer', 'fichas_segundo', 'fichas_tercer'));
     }
 
 

@@ -20,7 +20,7 @@
         ]); ?>
     </script>
 </head>
-<body>
+<body style="background-color: #fff;">
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -71,6 +71,9 @@
                                     <li><a href="{!! route('reportes.mensual_categoria') !!}">X Categoria</a></li>
                                     <li><a href="{!! route('reportes.mensual_personal') !!}">X Personal</a></li>
                                     <li><a href="{!! route('reportes.mensual_servicio') !!}">X Servicio</a></li>
+                                    <li><a href="{!! route('reportes.incidente_evento_servicio') !!}">X Incidente/Evento por Servicio</a></li>
+                                    <li><a href="{!! route('reportes.incidente_evento_personal') !!}">X Incidente/Evento por Personal</a></li>
+                                    <li><a href="{!! route('reportes.trimestral_servicio') !!}">X Trimestre/Servicio</a></li>
                                 </ul>
                             </li>
 

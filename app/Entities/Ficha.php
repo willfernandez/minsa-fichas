@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Ficha extends Entity
 {
     protected $fillable= ['paciente_id','servicio_id','turno','diagnostico', 'tipo_incidente_id', 'tipo_evento_id', 'categoria_adverso_id', 'problema_id', 'descrip_suceso','personal_id', 'fecha_ficha'];
+    protected $dates = ['created_at', 'updated_at','auction_end'];
 
-    public function getCreatedAtAttribute($date)
-    {
-        return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
-    }
+//    public function createdAtDate()
+//    {
+//        return Carbon::createFromFormat('m-d-Y', $this->created_at);
+//    }
 
     public function paciente()
     {
@@ -48,4 +49,6 @@ class Ficha extends Entity
     {
         return $this->belongsTo(Personal::getClass());
     }
+
+
 }
